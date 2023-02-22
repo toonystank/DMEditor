@@ -1,0 +1,6 @@
+name: DMEditor
+version: '${project.version}'
+main: com.toonystank.dmeditor.DMEditor
+depend: [ DeluxeMenus ]
+authors: [ Edward ]
+description: Edit DeluxeMenus menus in-game
