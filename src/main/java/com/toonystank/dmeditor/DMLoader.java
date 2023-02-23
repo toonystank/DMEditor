@@ -1,8 +1,9 @@
-package com.toonystank.dmeditor.utils;
+package com.toonystank.dmeditor;
 
-import com.toonystank.dmeditor.DMEditor;
 import com.toonystank.dmeditor.sections.BaseSection;
 import com.toonystank.dmeditor.utils.ConfigManager;
+import dev.triumphteam.gui.guis.Gui;
+import net.kyori.adventure.text.Component;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
@@ -12,14 +13,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class DMConfig extends ConfigManager {
+public class DMLoader extends ConfigManager {
 
     private final DMEditor plugin;
     private Plugin deluxeMenus;
     private Set<String> guiMenus = new HashSet<>();
     private Map<String,ConfigManager> guiFiles = new HashMap<>();
     private Map<String, BaseSection> guiSections = new HashMap<>();
-    public DMConfig(DMEditor plugin) throws IOException {
+    public DMLoader(DMEditor plugin) throws IOException {
         super(plugin.getServer().getPluginManager().getPlugin("DeluxeMenus"), "config.yml", false, false);
         this.plugin = plugin;
         this.deluxeMenus = plugin.getServer().getPluginManager().getPlugin("DeluxeMenus");
@@ -56,5 +57,6 @@ public class DMConfig extends ConfigManager {
             });
         });
     }
+
 
 }

@@ -13,7 +13,6 @@ public class BaseSection {
     public ConfigManager configManager;
     public String sectionName;
     public String material;
-    public @Nullable List<String> itemFlags = new ArrayList<>();
     public @Nullable List<String> potionEffects = new ArrayList<>();
     public String displayName;
     public List<String> lore = new ArrayList<>();
@@ -29,7 +28,6 @@ public class BaseSection {
     
     public void loadConfig() {
         this.material = configManager.getString("items." + sectionName + ".material");
-        this.itemFlags = configManager.getStringList("items." + sectionName + ".itemFlags");
         this.potionEffects = configManager.getStringList("items." + sectionName + ".potionEffects");
         this.displayName = configManager.getString("items." + sectionName + ".display_name");
         plugin.getLogger().info("Loading " + sectionName + " with displayName " + displayName);

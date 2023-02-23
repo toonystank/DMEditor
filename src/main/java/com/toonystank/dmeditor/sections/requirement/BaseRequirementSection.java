@@ -14,6 +14,7 @@ import java.util.Map;
 public class BaseRequirementSection{
 
     public @NotNull BaseSection baseSection;
+
     public @Nullable List<BaseRequirement> requirementTypes = new ArrayList<>();
     public Map<BaseRequirement, RequirementSectionOptions> requirementSectionOptions = new HashMap<>();
     public @Nullable Map<BaseRequirement, List<RequirementSection>> requirementSections = new HashMap<>();
