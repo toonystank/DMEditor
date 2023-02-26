@@ -1,6 +1,7 @@
 package com.toonystank.dmeditor.sections;
 
 import com.toonystank.dmeditor.sections.requirement.BaseRequirementSection;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -8,30 +9,29 @@ import java.util.Map;
 
 public class CommandSection {
 
+    public BaseSection baseSection;
     public Map<BaseCommandSection.ClickType, List<String>> commands = new HashMap<>();
     public BaseRequirementSection requirementSection;
 
-    public CommandSection(BaseSection baseSection, BaseCommandSection baseCommandSection) {
-        switch (baseCommandSection.getClickType()) {
-            case CLICK:
-                commands.put(BaseCommandSection.ClickType.CLICK, baseSection.configManager.getStringList("items." + baseSection.sectionName + ".click_commands"));
-                break;
-            case LEFT_CLICK:
-                commands.put(BaseCommandSection.ClickType.LEFT_CLICK,baseSection.configManager.getStringList("items." + baseSection.sectionName + ".left_click_commands"));
-                break;
-            case RIGHT_CLICK:
-                commands.put(BaseCommandSection.ClickType.RIGHT_CLICK,baseSection.configManager.getStringList("items." + baseSection.sectionName + ".right_click_commands"));
-                break;
-            case SHIFT_LEFT_CLICK:
-                commands.put(BaseCommandSection.ClickType.SHIFT_LEFT_CLICK,baseSection.configManager.getStringList("items." + baseSection.sectionName + ".shift_left_click_commands"));
-                break;
-            case SHIFT_RIGHT_CLICK:
-                commands.put(BaseCommandSection.ClickType.SHIFT_RIGHT_CLICK,baseSection.configManager.getStringList("items." + baseSection.sectionName + ".shift_right_click_commands"));
-                break;
-            default:
-                throw new IllegalArgumentException("Unexpected value: " + baseCommandSection.getClickType());
+
+    public CommandSection(BaseSection baseSection, @Nullable BaseCommandSection baseCommandSection) {
+        this.baseSection = baseSection;
+        if (baseCommandSection != null) {
+            baseCommandSection.getClickSection().forEach((clickType, commandSection) -> commands.put(clickType, baseSection.configManager.getStringList("items." + baseSection.sectionName + "." + clickType.clickCommands)));
         }
         requirementSection = new BaseRequirementSection(baseSection);
+    }
+    public CommandSection addCommand(BaseCommandSection.ClickType clickType, List<String> commands) {
+        this.commands.put(clickType, commands);
+        return this;
+    }
+    public CommandSection addRequirementSection(BaseRequirementSection requirementSection) {
+        this.requirementSection = requirementSection;
+        return this;
+    }
+    public void save() {
+        commands.forEach((clickType, commandList) -> baseSection.configManager.set("items." + baseSection.sectionName + "." + clickType.clickCommands, commandList));
+        requirementSection.save();
     }
 
 

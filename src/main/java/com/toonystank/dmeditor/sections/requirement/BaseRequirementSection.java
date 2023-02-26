@@ -2,7 +2,6 @@ package com.toonystank.dmeditor.sections.requirement;
 
 import com.toonystank.dmeditor.sections.BaseSection;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -13,15 +12,16 @@ import java.util.Map;
 @Getter
 public class BaseRequirementSection{
 
-    public @NotNull BaseSection baseSection;
+    public BaseSection baseSection;
 
-    public @Nullable List<BaseRequirement> requirementTypes = new ArrayList<>();
+    public  List<BaseRequirement> requirementTypes = new ArrayList<>();
     public Map<BaseRequirement, RequirementSectionOptions> requirementSectionOptions = new HashMap<>();
     public @Nullable Map<BaseRequirement, List<RequirementSection>> requirementSections = new HashMap<>();
 
-    public BaseRequirementSection(@NotNull BaseSection baseSection) {
+    public BaseRequirementSection(BaseSection baseSection) {
         this.baseSection = baseSection;
         for (BaseRequirement baseRequirement : BaseRequirement.values()) {
+            if (baseSection == null) return;
             if (baseSection.configManager.getConfig().contains("items." + baseSection.sectionName + "." + baseRequirement.requirement)) {
                 requirementTypes.add(baseRequirement);
             }
@@ -41,6 +41,33 @@ public class BaseRequirementSection{
         }
     }
 
+    public BaseRequirementSection addRequirementType(BaseRequirement baseRequirement) {
+        if (requirementTypes == null) requirementTypes = new ArrayList<>();
+        requirementTypes.add(baseRequirement);
+        return this;
+    }
+    public BaseRequirementSection addRequirementSectionOptions(BaseRequirement baseRequirement, RequirementSectionOptions requirementSectionOptions) {
+        if (this.requirementSectionOptions == null) this.requirementSectionOptions = new HashMap<>();
+        this.requirementSectionOptions.put(baseRequirement, requirementSectionOptions);
+        return this;
+    }
+    public BaseRequirementSection addRequirementSection(BaseRequirement baseRequirement, RequirementSection requirementSection) {
+        if (requirementSections == null) requirementSections = new HashMap<>();
+        requirementSections.computeIfAbsent(baseRequirement, k -> new ArrayList<>());
+        requirementSections.get(baseRequirement).add(requirementSection);
+        return this;
+    }
+    public void save() {
+        if (requirementTypes == null) return;
+        for (BaseRequirement baseRequirement : requirementTypes) {
+            requirementSectionOptions.get(baseRequirement).save();
+            assert requirementSections != null;
+            if (requirementSections.get(baseRequirement) == null) continue;
+            for (RequirementSection requirementSection : requirementSections.get(baseRequirement)) {
+                requirementSection.save();
+            }
+        }
+    }
     public enum BaseRequirement {
         OPEN_REQUIREMENT("open_requirement"),
         VIEW_REQUIREMENT("view_requirement"),
